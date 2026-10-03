@@ -5,7 +5,7 @@ namespace SniffOS.Tests;
 public sealed class ProtocolTests
 {
     [Fact]
-    public void Codec_RoundTrips_ExplicitLittleEndianFrame()
+    public void CodecRoundTripsExplicitLittleEndianFrame()
     {
         var original = new ProtocolPacket(MessageType.CaptureData, PacketOptions.First, 0x12345678, 0xAABBCCDD, 0x0102030405060708, new byte[] { 1, 2, 3, 0xFF });
         var encoded = ProtocolCodec.Encode(original);
@@ -19,7 +19,7 @@ public sealed class ProtocolTests
     }
 
     [Fact]
-    public void Parser_HandlesFragmentationAndResynchronizesAfterCorruptFrame()
+    public void ParserHandlesFragmentationAndResynchronizesAfterCorruptFrame()
     {
         var good = ProtocolCodec.Encode(new ProtocolPacket(MessageType.Status, PacketOptions.None, 2, 9, 10, new byte[] { 7, 8 }));
         var bad = ProtocolCodec.Encode(new ProtocolPacket(MessageType.Status, PacketOptions.None, 1, 9, 8, new byte[] { 4, 5 }));
@@ -38,7 +38,7 @@ public sealed class ProtocolTests
     }
 
     [Fact]
-    public void Parser_ReportsOversizedPayloadWithoutAllocatingIt()
+    public void ParserReportsOversizedPayloadWithoutAllocatingIt()
     {
         var parser = new PacketStreamParser(maxPayloadBytes: 8);
         var bytes = new byte[] { ProtocolConstants.Magic0, ProtocolConstants.Magic1, ProtocolConstants.Version, ProtocolConstants.HeaderSize, (byte)MessageType.Status, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0x7F, 0, 0, 0, 0 };

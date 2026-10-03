@@ -156,14 +156,19 @@ public static class SpiDecoder
         return configuration.ChipSelectActiveLow ? !high : high;
     }
 
+    private static void ValidateChannel(int channel)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(channel);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(channel, 15);
+    }
+
     private static void Validate(SpiConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(configuration);
-        foreach (var channel in new[] { configuration.ClockChannel, configuration.MosiChannel, configuration.MisoChannel ?? -1, configuration.ChipSelectChannel ?? -1 })
-        {
-            ArgumentOutOfRangeException.ThrowIfLessThan(channel, -1);
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(channel, 15);
-        }
+        ValidateChannel(configuration.ClockChannel);
+        ValidateChannel(configuration.MosiChannel);
+        if (configuration.MisoChannel is int misoChannel) ValidateChannel(misoChannel);
+        if (configuration.ChipSelectChannel is int chipSelectChannel) ValidateChannel(chipSelectChannel);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.WordSize);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(configuration.WordSize, 32);
     }

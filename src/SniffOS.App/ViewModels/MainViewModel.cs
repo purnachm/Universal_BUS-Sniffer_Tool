@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SniffOS.Core.Acquisition;
@@ -211,7 +212,7 @@ public sealed partial class MainViewModel : ObservableObject, IAsyncDisposable
             Capture = loadedCapture;
             SelectedSampleRate = file.Metadata.SampleRateHz;
             ViewStartSample = 0;
-            SamplesPerPixel = Math.Max(1d, loadedCapture.Chunks.Select(c => c.EndExclusive).DefaultIfEmpty(1200).Max() / 1200d);
+            SamplesPerPixel = Math.Max(1d, loadedCapture.Chunks.Select(c => c.EndExclusive).DefaultIfEmpty(1200UL).Max() / 1200d);
             CaptureSummary = $"{loadedCapture.CapturedSampleCount:N0} samples, {loadedCapture.Chunks.Count:N0} chunks, {loadedCapture.Gaps.Count:N0} reported gaps";
             StatusMessage = loadedCapture.HasLoss ? "Loaded capture contains explicit gaps." : $"Loaded {Path.GetFileName(path)}.";
         }

@@ -7,8 +7,10 @@ namespace SniffOS.Tests;
 
 public sealed class CaptureAndStorageTests
 {
+    private static readonly string[] ChannelNames = ["SCL", "SDA"];
+
     [Fact]
-    public void Assembler_RecordsSequenceAndSampleIndexGaps()
+    public void AssemblerRecordsSequenceAndSampleIndexGaps()
     {
         var capture = new RawCapture(1_000_000, 16, 42);
         var assembler = new CaptureAssembler(capture, 7);
@@ -21,7 +23,7 @@ public sealed class CaptureAndStorageTests
     }
 
     [Fact]
-    public async Task CaptureFile_RoundTripsChunksAndExplicitGaps()
+    public async Task CaptureFileRoundTripsChunksAndExplicitGaps()
     {
         var capture = new RawCapture(10_000, 2, 99);
         capture.AddChunk(new SampleChunk(0, new ushort[] { 0, 1, 3, 2 }));
@@ -31,7 +33,7 @@ public sealed class CaptureAndStorageTests
         var path = Path.Combine(Path.GetTempPath(), $"sniffos-{Guid.NewGuid():N}.sniffcap");
         try
         {
-            var metadata = new CaptureMetadata("SIM", "test", 10_000, 2, 3, new[] { "SCL", "SDA" }, "Immediate", 99, DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture), "test clock");
+            var metadata = new CaptureMetadata("SIM", "test", 10_000, 2, 3, ChannelNames, "Immediate", 99, DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture), "test clock");
             await CaptureFileFormat.WriteAsync(path, metadata, capture);
             var loaded = await CaptureFileFormat.ReadAsync(path);
             Assert.Equal(metadata.DeviceId, loaded.Metadata.DeviceId);
@@ -44,7 +46,7 @@ public sealed class CaptureAndStorageTests
     }
 
     [Fact]
-    public async Task CaptureFile_RejectsTruncatedRecord()
+    public async Task CaptureFileRejectsTruncatedRecord()
     {
         var path = Path.Combine(Path.GetTempPath(), $"sniffos-truncated-{Guid.NewGuid():N}.sniffcap");
         await File.WriteAllBytesAsync(path, "SNFC"u8.ToArray());

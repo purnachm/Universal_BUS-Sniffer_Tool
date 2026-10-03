@@ -6,7 +6,7 @@ namespace SniffOS.Tests;
 public sealed class DecoderTests
 {
     [Fact]
-    public void Uart_DecodesGoldenByteAndFlagsNoError()
+    public void UartDecodesGoldenByteAndFlagsNoError()
     {
         const int samplesPerBit = 10;
         var values = new List<ushort>(20);
@@ -25,7 +25,7 @@ public sealed class DecoderTests
     }
 
     [Fact]
-    public void Spi_DecodesMsbFirstWordOnLeadingEdges()
+    public void SpiDecodesMsbFirstWordOnLeadingEdges()
     {
         var values = new List<ushort> { 0 }; // CS active low, clock idle low
         const byte expected = 0xA5;
@@ -45,7 +45,7 @@ public sealed class DecoderTests
     }
 
     [Fact]
-    public void I2c_RecognizesStartByteAckAndStop()
+    public void I2cRecognizesStartByteAckAndStop()
     {
         var values = new List<ushort> { 3, 1, 0 }; // idle, START, SCL low
         const byte expected = 0x52;
@@ -66,7 +66,7 @@ public sealed class DecoderTests
         capture.AddChunk(new SampleChunk(0, values.ToArray()));
         var result = I2cDecoder.Decode(capture, 0, 1);
         Assert.Contains(result.Events, e => e.Kind == I2cEventKind.Start);
-        var item = Assert.Single(result.Events.Where(e => e.Kind == I2cEventKind.Byte));
+        var item = Assert.Single(result.Events, e => e.Kind == I2cEventKind.Byte);
         Assert.Equal(expected, item.Data!.Value);
         Assert.True(item.Acknowledged!.Value);
         Assert.Contains(result.Events, e => e.Kind == I2cEventKind.Stop);

@@ -6,7 +6,7 @@ namespace SniffOS.Tests;
 public sealed class DeviceTests
 {
     [Fact]
-    public async Task AcquisitionManager_EnforcesLifecycleTransitions()
+    public async Task AcquisitionManagerEnforcesLifecycleTransitions()
     {
         await using var manager = new SniffOS.Core.Acquisition.AcquisitionManager(new SimulatedCaptureDevice(TimeSpan.Zero));
         Assert.Equal(DeviceState.Disconnected, manager.State);
@@ -20,7 +20,7 @@ public sealed class DeviceTests
     }
 
     [Fact]
-    public async Task Simulator_ConnectsCapturesAndReportsCompleteState()
+    public async Task SimulatorConnectsCapturesAndReportsCompleteState()
     {
         await using var device = new SimulatedCaptureDevice(TimeSpan.Zero);
         await device.ConnectAsync();
@@ -33,7 +33,7 @@ public sealed class DeviceTests
     }
 
     [Fact]
-    public async Task Simulator_CancellationDoesNotReturnPartialCaptureAsComplete()
+    public async Task SimulatorCancellationDoesNotReturnPartialCaptureAsComplete()
     {
         await using var device = new SimulatedCaptureDevice(TimeSpan.FromMilliseconds(2));
         await device.ConnectAsync();
@@ -46,7 +46,7 @@ public sealed class DeviceTests
     }
 
     [Fact]
-    public void CaptureConfiguration_RejectsUnadvertisedRateAndMask()
+    public void CaptureConfigurationRejectsUnadvertisedRateAndMask()
     {
         var device = new SimulatedCaptureDevice();
         var badRate = new CaptureConfiguration(4, 123, 10, 0xF, TriggerMode.Immediate, 0, true);
