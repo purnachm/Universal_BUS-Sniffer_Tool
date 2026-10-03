@@ -25,22 +25,27 @@
             <Setter Property="Padding" Value="12,7" />
             <Setter Property="Margin" Value="0,0,6,0" />
             <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#31506A" />
+                    <Setter Property="BorderBrush" Value="#4A657D" />
+                </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="#596878" />
-                    <Setter Property="Background" Value="#E8EDF2" />
-                    <Setter Property="BorderBrush" Value="#C8D1DA" />
+                    <Setter Property="Foreground" Value="#718094" />
+                    <Setter Property="Background" Value="#1A232E" />
+                    <Setter Property="BorderBrush" Value="#263242" />
                 </Trigger>
             </Style.Triggers>
         </Style>
         <Style TargetType="ComboBox">
-            <Setter Property="Foreground" Value="#15202B" />
-            <Setter Property="Background" Value="#FFFFFF" />
-            <Setter Property="BorderBrush" Value="#9AA8B5" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Background" Value="#111923" />
+            <Setter Property="BorderBrush" Value="#3A4A5E" />
+            <Setter Property="Padding" Value="6,2" />
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style TargetType="ComboBoxItem">
-                        <Setter Property="Foreground" Value="#15202B" />
-                        <Setter Property="Background" Value="#FFFFFF" />
+                        <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+                        <Setter Property="Background" Value="#18212D" />
                         <Setter Property="Padding" Value="6,4" />
                         <Style.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
@@ -51,11 +56,68 @@
                     </Style>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="#718094" />
+                    <Setter Property="Background" Value="#1A232E" />
+                    <Setter Property="BorderBrush" Value="#263242" />
+                </Trigger>
+            </Style.Triggers>
             <Setter Property="Margin" Value="0,0,0,8" />
         </Style>
         <Style TargetType="TextBox">
-            <Setter Property="Foreground" Value="#15202B" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Background" Value="#111923" />
+            <Setter Property="BorderBrush" Value="#3A4A5E" />
+            <Setter Property="CaretBrush" Value="{StaticResource Accent}" />
+            <Setter Property="SelectionBrush" Value="#287A68" />
+            <Setter Property="SelectionTextBrush" Value="#FFFFFF" />
+            <Setter Property="Padding" Value="5,3" />
             <Setter Property="Margin" Value="0,0,0,8" />
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="#718094" />
+                    <Setter Property="Background" Value="#1A232E" />
+                    <Setter Property="BorderBrush" Value="#263242" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            <Setter Property="Background" Value="#111923" />
+            <Setter Property="BorderBrush" Value="#3A4A5E" />
+            <Setter Property="Margin" Value="0,1" />
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            <Setter Property="Background" Value="#1B2837" />
+            <Setter Property="BorderBrush" Value="{StaticResource PanelBorder}" />
+            <Setter Property="Padding" Value="8,5" />
+        </Style>
+        <Style TargetType="DataGridCell">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Background" Value="#111923" />
+            <Setter Property="BorderBrush" Value="#233143" />
+            <Setter Property="Padding" Value="6,3" />
+        </Style>
+        <Style TargetType="DataGridRow">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Background" Value="#111923" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="#FFFFFF" />
+                    <Setter Property="Background" Value="#245C54" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="#18212D" />
+            <Setter Property="Foreground" Value="#53667C" />
+            <Setter Property="BorderBrush" Value="#2E3C50" />
+            <Setter Property="Width" Value="12" />
         </Style>
     </Application.Resources>
 </Application>
