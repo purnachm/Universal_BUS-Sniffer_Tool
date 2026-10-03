@@ -35,7 +35,7 @@ public sealed class ChannelViewModel : ObservableObject
 
 public sealed record DecoderEventRow(string Time, string Kind, string Value, string Status);
 
-public sealed class MainViewModel : ObservableObject, IAsyncDisposable
+public sealed partial class MainViewModel : ObservableObject, IAsyncDisposable
 {
     private readonly AcquisitionManager _acquisition;
     private readonly IFileDialogService _dialogs;
