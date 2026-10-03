@@ -1,0 +1,133 @@
+<Window x:Class="SniffOS.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:SniffOS.App.Views"
+        Title="SniffOS — Digital Bus Instrument" Width="1420" Height="900"
+        MinWidth="1100" MinHeight="700" Background="{StaticResource WindowBackground}">
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="#0C1118" BorderBrush="{StaticResource PanelBorder}" BorderThickness="0,0,0,1" Padding="20,14">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="SNIFFOS" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Accent}" />
+                    <TextBlock Text="16-channel digital bus instrumentation · passive receive-only" Foreground="{StaticResource TextSecondary}" Margin="0,2,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse Width="9" Height="9" Fill="{StaticResource Accent}" Margin="0,0,7,0" />
+                    <TextBlock Text="SIMULATOR" Foreground="{StaticResource Accent}" FontWeight="SemiBold" />
+                    <TextBlock Text="  ·  " Foreground="{StaticResource TextSecondary}" />
+                    <TextBlock Text="{Binding DeviceStatus}" Foreground="{StaticResource TextSecondary}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Background="#0C1118" BorderBrush="{StaticResource PanelBorder}" BorderThickness="0,1,0,0" Padding="16,9">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource TextSecondary}" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="1" Text="{Binding CaptureSummary}" HorizontalAlignment="Right" Foreground="{StaticResource Warning}" />
+            </Grid>
+        </Border>
+
+        <Grid Margin="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="245" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="260"/></Grid.RowDefinitions>
+
+            <Border Grid.Column="0" Grid.RowSpan="2" Background="{StaticResource PanelBackground}" BorderBrush="{StaticResource PanelBorder}" BorderThickness="1" CornerRadius="6" Padding="16">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="DEVICE" Foreground="{StaticResource Accent}" FontWeight="Bold" FontSize="12" />
+                        <TextBlock Text="{Binding DeviceName}" FontWeight="SemiBold" Margin="0,8,0,3" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding Capabilities.FirmwareVersion}" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,12" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Connect" Command="{Binding ConnectCommand}" />
+                            <Button Content="Disconnect" Command="{Binding DisconnectCommand}" />
+                        </StackPanel>
+                        <Separator Margin="0,8" />
+                        <TextBlock Text="CAPTURE" Foreground="{StaticResource Accent}" FontWeight="Bold" FontSize="12" />
+                        <Label Content="Sample rate" Margin="0,9,0,0" />
+                        <ComboBox ItemsSource="{Binding SampleRates}" SelectedItem="{Binding SelectedSampleRate, UpdateSourceTrigger=PropertyChanged}" />
+                        <Label Content="Samples" />
+                        <TextBox Text="{Binding SampleCountText, UpdateSourceTrigger=PropertyChanged}" />
+                        <Label Content="Trigger" />
+                        <ComboBox ItemsSource="{Binding TriggerModes}" SelectedItem="{Binding SelectedTrigger}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,12">
+                            <Button Content="Start" Command="{Binding StartCaptureCommand}" Background="#1D765F" />
+                            <Button Content="Stop" Command="{Binding StopCaptureCommand}" Background="#7A3039" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Save" Command="{Binding SaveCommand}" />
+                            <Button Content="Load" Command="{Binding LoadCommand}" />
+                        </StackPanel>
+                        <Separator Margin="0,8" />
+                        <TextBlock Text="CHANNELS" Foreground="{StaticResource Accent}" FontWeight="Bold" FontSize="12" />
+                        <ItemsControl ItemsSource="{Binding Channels}" Margin="0,8,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,1">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="26"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <CheckBox IsChecked="{Binding IsEnabled}" VerticalAlignment="Center" />
+                                        <TextBox Grid.Column="1" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Padding="3,1" Margin="0" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="{Binding Capabilities.TimebaseDescription}" Foreground="{StaticResource TextSecondary}" FontSize="10" TextWrapping="Wrap" Margin="0,12,0,0" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <Border Grid.Column="2" Grid.Row="0" Background="#0B1118" BorderBrush="{StaticResource PanelBorder}" BorderThickness="1" CornerRadius="6" Padding="10">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <Grid Margin="4,0,4,8">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="WAVEFORM" Foreground="{StaticResource Accent}" FontWeight="Bold" FontSize="12" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="Cursor A" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,4,0" />
+                        <TextBox Grid.Column="2" Text="{Binding CursorA, UpdateSourceTrigger=PropertyChanged}" Width="82" Margin="0,0,10,0" Padding="3" />
+                        <TextBlock Grid.Column="3" Text="Cursor B" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,4,0" />
+                        <TextBox Grid.Column="4" Text="{Binding CursorB, UpdateSourceTrigger=PropertyChanged}" Width="82" Padding="3" />
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="110"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <ItemsControl ItemsSource="{Binding Channels}" VerticalAlignment="Stretch" Margin="0,0,8,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Height="28" BorderBrush="#233143" BorderThickness="0,0,0,1">
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center" FontFamily="Consolas" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <views:WaveformSurface Grid.Column="1" Capture="{Binding Capture}" ChannelCount="16"
+                                                FirstSample="{Binding ViewStartSample, Mode=TwoWay}"
+                                                SamplesPerPixel="{Binding SamplesPerPixel, Mode=TwoWay}"
+                                                CursorA="{Binding CursorA}" CursorB="{Binding CursorB}" />
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Grid.Row="1" Background="{StaticResource PanelBackground}" BorderBrush="{StaticResource PanelBorder}" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <Grid>
+                        <TextBlock Text="DECODED EVENTS" Foreground="{StaticResource Accent}" FontWeight="Bold" FontSize="12" />
+                        <Button Content="Decode UART CH00" Command="{Binding DecodeUartCommand}" HorizontalAlignment="Right" Padding="10,4" />
+                    </Grid>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding DecoderEvents}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" HeadersVisibility="Column" Margin="0,8,0,0" Background="#111923" Foreground="{StaticResource TextPrimary}" BorderBrush="{StaticResource PanelBorder}" RowBackground="#15202C" AlternatingRowBackground="#192635">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Time" Binding="{Binding Time}" Width="150" />
+                            <DataGridTextColumn Header="Decoder" Binding="{Binding Kind}" Width="100" />
+                            <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="200" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>

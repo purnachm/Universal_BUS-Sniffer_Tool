@@ -1,0 +1,15 @@
+# .NET build outputs
+[Bb]in/
+[Oo]bj/
+.vs/
+TestResults/
+*.user
+*.suo
+
+# NuGet restore artifacts
+packages/
+*.nupkg
+
+# Local capture/test outputs
+*.sniffcap
+artifacts/
