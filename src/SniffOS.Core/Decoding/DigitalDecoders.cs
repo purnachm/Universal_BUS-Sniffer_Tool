@@ -13,8 +13,8 @@ public sealed record UartConfiguration(uint BaudRate, int DataBits = 8, UartPari
     public void Validate(uint sampleRateHz)
     {
         ArgumentOutOfRangeException.ThrowIfZero(BaudRate);
-        if (DataBits is < 5 or > 8 || (StopBits == UartStopBits.Two && DataBits > 8))
-            throw new ArgumentOutOfRangeException(nameof(sampleRateHz), "UART framing settings are invalid.");
+        ArgumentOutOfRangeException.ThrowIfLessThan(DataBits, 5);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(DataBits, 8);
         ArgumentOutOfRangeException.ThrowIfZero(sampleRateHz);
         if (sampleRateHz < BaudRate * 2) throw new ArgumentException("At least two samples per UART bit are required for this decoder.", nameof(sampleRateHz));
     }
@@ -27,7 +27,8 @@ public static class UartDecoder
     public static IReadOnlyList<UartEvent> Decode(RawCapture capture, int channel, UartConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(capture);
-        if (channel is < 0 or > 15) throw new ArgumentOutOfRangeException(nameof(channel));
+        ArgumentOutOfRangeException.ThrowIfNegative(channel);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(channel, 15);
         configuration.Validate(capture.SampleRateHz);
         var events = new List<UartEvent>();
         var samplesPerBit = (double)capture.SampleRateHz / configuration.BaudRate;
@@ -159,8 +160,12 @@ public static class SpiDecoder
     {
         ArgumentNullException.ThrowIfNull(configuration);
         foreach (var channel in new[] { configuration.ClockChannel, configuration.MosiChannel, configuration.MisoChannel ?? -1, configuration.ChipSelectChannel ?? -1 })
-            if (channel is < -1 or > 15) throw new ArgumentOutOfRangeException(nameof(configuration));
-        if (configuration.WordSize is < 1 or > 32) throw new ArgumentOutOfRangeException(nameof(configuration));
+        {
+            ArgumentOutOfRangeException.ThrowIfLessThan(channel, -1);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(channel, 15);
+        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.WordSize);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(configuration.WordSize, 32);
     }
 }
 
@@ -172,8 +177,10 @@ public static class I2cDecoder
 {
     public static I2cDecodeResult Decode(RawCapture capture, int sclChannel, int sdaChannel)
     {
-        if (sclChannel is < 0 or > 15) throw new ArgumentOutOfRangeException(nameof(sclChannel));
-        if (sdaChannel is < 0 or > 15) throw new ArgumentOutOfRangeException(nameof(sdaChannel));
+        ArgumentOutOfRangeException.ThrowIfNegative(sclChannel);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(sclChannel, 15);
+        ArgumentOutOfRangeException.ThrowIfNegative(sdaChannel);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(sdaChannel, 15);
         var events = new List<I2cEvent>();
         var diagnostics = new List<string>();
         foreach (var chunk in capture.Chunks)

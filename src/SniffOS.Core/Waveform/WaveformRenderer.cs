@@ -22,10 +22,12 @@ public static class WaveformRenderer
     public static IReadOnlyList<WaveformColumn> Render(RawCapture capture, int channel, WaveformViewport viewport)
     {
         ArgumentNullException.ThrowIfNull(capture);
-        if (channel is < 0 or > 15) throw new ArgumentOutOfRangeException(nameof(channel));
+        ArgumentOutOfRangeException.ThrowIfNegative(channel);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(channel, 15);
         if (viewport.PixelWidth <= 0) return Array.Empty<WaveformColumn>();
-        if (viewport.SamplesPerPixel <= 0 || double.IsNaN(viewport.SamplesPerPixel) || double.IsInfinity(viewport.SamplesPerPixel))
-            throw new ArgumentOutOfRangeException(nameof(viewport));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(viewport.SamplesPerPixel);
+        if (double.IsNaN(viewport.SamplesPerPixel) || double.IsInfinity(viewport.SamplesPerPixel))
+            throw new ArgumentException("SamplesPerPixel must be finite.", nameof(viewport));
         var columns = new WaveformColumn[viewport.PixelWidth];
         for (var x = 0; x < columns.Length; x++)
         {

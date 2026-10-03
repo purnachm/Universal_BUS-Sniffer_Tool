@@ -23,7 +23,7 @@ public sealed class RawCapture
     {
         ArgumentOutOfRangeException.ThrowIfZero(sampleRateHz);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(channelCount);
-        if (channelCount > 16) throw new ArgumentOutOfRangeException(nameof(channelCount));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(channelCount, 16);
         SampleRateHz = sampleRateHz;
         ChannelCount = channelCount;
         CaptureId = captureId;

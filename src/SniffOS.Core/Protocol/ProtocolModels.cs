@@ -84,23 +84,25 @@ public sealed record CaptureConfiguration(
     {
         ArgumentNullException.ThrowIfNull(capabilities);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ChannelCount);
-        if (ChannelCount > 16 || ChannelCount > capabilities.ChannelCount)
-            throw new ArgumentOutOfRangeException(nameof(capabilities), $"ChannelCount {ChannelCount} is not supported by the device.");
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(ChannelCount, 16);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(ChannelCount, capabilities.ChannelCount);
 
         ArgumentOutOfRangeException.ThrowIfZero(SampleRateHz);
         if (!capabilities.SupportedSampleRates.Contains(SampleRateHz))
             throw new ArgumentException($"Sample rate {SampleRateHz} Hz is not advertised by the device.", nameof(capabilities));
 
         ArgumentOutOfRangeException.ThrowIfZero(SampleCount);
-        if (SampleCount > capabilities.MaxCaptureSamples)
-            throw new ArgumentOutOfRangeException(nameof(capabilities), $"SampleCount {SampleCount} exceeds the device limit.");
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(SampleCount, capabilities.MaxCaptureSamples);
 
         ArgumentOutOfRangeException.ThrowIfZero(EnabledChannelMask);
         if ((EnabledChannelMask & ~((1u << ChannelCount) - 1u)) != 0)
             throw new ArgumentException("The enabled channel mask is inconsistent with the channel count.", nameof(capabilities));
 
-        if (Trigger != TriggerMode.Immediate && (TriggerChannel < 0 || TriggerChannel >= ChannelCount))
-            throw new ArgumentOutOfRangeException(nameof(capabilities), $"TriggerChannel {TriggerChannel} is outside the configured channel range.");
+        if (Trigger != TriggerMode.Immediate)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(TriggerChannel);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(TriggerChannel, ChannelCount - 1);
+        }
     }
 }
 

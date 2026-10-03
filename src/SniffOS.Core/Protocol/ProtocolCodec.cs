@@ -10,8 +10,7 @@ public static class ProtocolCodec
         ArgumentNullException.ThrowIfNull(packet);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxPayloadBytes);
         var payload = packet.Payload ?? throw new ArgumentException("Payload cannot be null.", nameof(packet));
-        if (payload.Length > maxPayloadBytes)
-            throw new ArgumentOutOfRangeException(nameof(packet), $"Payload is limited to {maxPayloadBytes} bytes.");
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(payload.Length, maxPayloadBytes);
 
         var frame = new byte[ProtocolConstants.HeaderSize + payload.Length];
         frame[0] = ProtocolConstants.Magic0;
